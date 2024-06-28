@@ -1,17 +1,19 @@
 const Board = require('D:/github/board/root/models/board');
+const User = require('D:/github/board/root/models/user');
 
 // 게시글 등록
 const createBoardPost = async (req, res) => {
   try {
-    const { title, content, userId } = req.body;
+    console.log('Request Body:', req.body);
+    const { title, content, user_id } = req.body;
 
     // 유효성 검사: 필드가 비어 있으면 400 Bad Request 반환
-    if (!title || !content || !userId) {
+    if (!title || !content || !user_id) {
       return res.status(400).json({ error: '제목, 내용, 사용자 ID를 모두 입력해주세요.' });
     }
 
     // 사용자 ID가 존재하는지 확인
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(user_id);
     if (!user) {
       return res.status(404).json({ error: '해당 사용자를 찾을 수 없습니다.' });
     }
@@ -20,7 +22,7 @@ const createBoardPost = async (req, res) => {
     const newPost = await Board.create({
       title,
       content,
-      userId
+      user_id
     });
 
     // 게시글 생성 성공 시 201 Created 반환
@@ -99,15 +101,15 @@ const getBoardPosts = async (req, res) => {
 };
 
 // 특정 유저 ID로 게시글 조회
-const getBoardPostsByUserId = async (req, res) => {
+const getBoardPostsById = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { id } = req.params;
 
     // 유저 ID로 해당 유저의 게시글 조회
-    const boardPosts = await Board.findAll({ where: { userId } });
+    const boardPosts = await Board.findAll({ where: { user_id: id } });
 
     // 조회 결과를 반환
-    return res.status(200).json({ message: `유저 ID ${userId}의 게시글 목록 반환`, data: boardPosts });
+    return res.status(200).json({ message: `유저 ID ${id}의 게시글 목록 반환`, data: boardPosts });
   } catch (error) {
     console.error('특정 유저 게시글 조회 오류:', error.message);
     return res.status(500).json({ error: '서버 에러' });
@@ -125,7 +127,7 @@ const getBoardPostsByEmail = async (req, res) => {
       return res.status(404).json({ error: '해당 이메일을 가진 사용자를 찾을 수 없습니다.' });
     }
 
-    const boardPosts = await Board.findAll({ where: { userId: user.id } });
+    const boardPosts = await Board.findAll({ where: { user_id: user.id } }); // user.id로 수정
 
     // 조회 결과를 반환
     return res.status(200).json({ message: `${email}의 게시글 목록 반환`, data: boardPosts });
@@ -140,6 +142,6 @@ module.exports = {
   updateBoardPost,
   deleteBoardPost,
   getBoardPosts,
-  getBoardPostsByUserId,
+  getBoardPostsById,
   getBoardPostsByEmail
 };

@@ -5,7 +5,7 @@ const {
   updateBoardPost,
   deleteBoardPost,
   getBoardPosts,
-  getBoardPostsByUserId,
+  getBoardPostsById,
   getBoardPostsByEmail
 } = require('D:/github/board/root/controllers/boardController');
 
@@ -22,7 +22,7 @@ router.delete('/:id', deleteBoardPost);
 router.get('/', getBoardPosts);
 
 // 특정 유저 ID로 게시글 조회
-router.get('/user/:userId', getBoardPostsByUserId);
+router.get('/user/:id', getBoardPostsById);
 
 // 특정 사용자 이메일로 게시글 조회
 router.get('/user/email/:email', getBoardPostsByEmail);
