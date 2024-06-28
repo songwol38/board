@@ -20,18 +20,17 @@ const Board = sequelize.define('Board', {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'users', // 참조할 테이블 이름
-      key: 'id' // 참조할 테이블의 기본 키
+      model: 'users',
+      key: 'id'
     }
   }
 }, {
   timestamps: false
 });
 
-// 외래 키 설정
 Board.belongsTo(User, {
-  foreignKey: 'user_id', // 외래 키 필드명
-  allowNull: false // 필수 필드임을 나타냄
+  foreignKey: 'user_id',
+  allowNull: false
 });
 
 module.exports = Board;
